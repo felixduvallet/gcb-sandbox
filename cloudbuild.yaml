@@ -3,5 +3,9 @@ steps:
   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/gcb-sandbox', '.' ]
 - name: gcr.io/cloud-builders/git
   args: ['clone', 'https://github.com/felixduvallet/gcb-sandbox']
+- name: gcr.io/cloud-builders/bazel
+  args: ['build', '//source/py_native:all']
+- name: gcr.io/cloud-builders/bazel
+  args: ['test', '//source/py_native:all']
 images:
 - 'gcr.io/$PROJECT_ID/gcb-sandbox'
