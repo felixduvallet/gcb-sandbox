@@ -6,9 +6,4 @@ steps:
           '-t', 'gcr.io/$PROJECT_ID/gcb-sandbox',
           '--cache-from', 'gcr.io/$PROJECT_ID/gcb-sandbox:latest',
           '.' ]
-- name: gcr.io/cloud-builders/bazel
-  args: ['build', '//source/py_native:all']
-- name: gcr.io/cloud-builders/bazel
-  args: ['test', '--test_output=errors', '//source/py_native:all']
-images:
 - 'gcr.io/$PROJECT_ID/gcb-sandbox'
