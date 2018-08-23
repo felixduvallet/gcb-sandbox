@@ -14,16 +14,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /workspace
 
-COPY install/ /workspace/install/
+COPY . /workspace
+
 RUN chmod +x /workspace/install/install_bazel.sh && \
 /workspace/install/install_bazel.sh
-
-COPY install.sh /workspace/
-# CMD ["/workspace/install.sh"]
-
-COPY gcb-sandbox /workspace/gcb-sandbox
-
-WORKDIR /workspace/gcb-sandbox/
 
 RUN bazel build //source/py_native:all && \
     bazel test --test_output=errors //source/py_native:all
