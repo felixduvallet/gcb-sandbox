@@ -31,7 +31,15 @@ py_test(
 )
 
 py_test(
-    name = "fail",
-    srcs = ["fail.py"],
-    deps = [":lib"],
+    name = "test_numpy",
+    srcs = ["test_numpy.py"],
+    deps = [
+    ],
 )
+
+
+# py_test(
+#     name = "fail",
+#     srcs = ["fail.py"],
+#     deps = [":lib"],
+# )
