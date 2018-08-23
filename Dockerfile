@@ -17,7 +17,7 @@ WORKDIR /workspace
 COPY . /workspace
 
 RUN chmod +x /workspace/install/install_bazel.sh && \
-/workspace/install/install_bazel.sh
+    /workspace/install/install_bazel.sh
 
 RUN bazel build //source/py_native:all && \
     bazel test --test_output=errors //source/py_native:all
