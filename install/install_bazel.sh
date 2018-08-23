@@ -13,7 +13,7 @@ export BAZEL_VERSION=0.16.1
 
 mkdir /bazel && \
     cd /bazel && \
-    wget -q --show-progress --progress=bar https://github.com/bazelbuild/bazel/releases/download/0.16.1/bazel-0.16.1-installer-linux-x86_64.sh && \
+    wget -nv https://github.com/bazelbuild/bazel/releases/download/0.16.1/bazel-0.16.1-installer-linux-x86_64.sh && \
     chmod +x bazel-*.sh && \
     ./bazel-$BAZEL_VERSION-installer-linux-x86_64.sh && \
     cd / && \
