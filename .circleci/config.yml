@@ -64,7 +64,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: *attach_workspace
+      - *attach_workspace
       - run:
           name: Load container
           command:
