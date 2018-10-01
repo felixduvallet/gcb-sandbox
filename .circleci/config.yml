@@ -4,13 +4,11 @@
 #
 version: 2
 jobs:
-  defaults: &defaults
-
-    build:
-      docker:
-        - image: circleci/python:3.6.1
-      working_directory: ~/repo
-      steps:
+  build:
+    docker:
+      - image: circleci/python:3.6.1
+    working_directory: ~/repo
+    steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
