@@ -44,7 +44,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - docker-cache
+            - docker-cache/vehicle_builder.tar
       - run:
           name: Run container
           command:
@@ -58,17 +58,33 @@ jobs:
           command:
             docker exec speedy_trucker /bin/sh -c "bazel test --verbose_failures --noexperimental_ui //source/..."
 
+  load_container:
+    <<:  *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load container
+          command:
+            docker load -i /tmp/workspace/docker-cache/vehicle_builder.tar
+      - run:
+          name: Run container
+          command:
+            docker run -itd --name speedy_trucker vehicle_builder
+
   lint_bazel:
     <<:  *defaults
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - *attach_workspace
       - run:
-          name: Load container
+          name: Build vehicle docker
           command:
-            docker load -i /tmp/workspace/docker-cache/vehicle_builder.tar
+            docker build -t vehicle_builder .
       - run:
           name: Run container
           command:
@@ -83,4 +99,7 @@ workflows:
   build_and_test:
     jobs:
       - build
+      - load_container:
+          requires:
+            - build
       - lint_bazel
