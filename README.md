@@ -1,2 +1,2 @@
-# gcb-sandbox
-Sandbox for google cloud build
+# build system sandbox
+Sandbox for trying out different build systems.
