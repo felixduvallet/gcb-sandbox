@@ -33,8 +33,13 @@ jobs:
     docker:
       - image: circleci/python:3.6.1
     steps:
+      - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+          name: Build vehicle docker
+          command:
+            docker build -t vehicle_builder .
       - run:
           name: Run container
           command:
@@ -49,3 +54,4 @@ workflows:
   build_and_test:
     jobs:
       - build
+      - lint_bazel
