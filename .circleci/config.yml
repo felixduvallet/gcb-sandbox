@@ -24,6 +24,10 @@ jobs:
           docker_layer_caching: true
       - run: *run_build_container
       - run:
+          name: Save docker image
+          command:
+            mkdir -p docker-cache && docker save --output docker-cache/vehicle_builder.tar vehicle_builder
+      - run:
           name: Run container
           command:
             docker run -itd --name speedy_trucker vehicle_builder
