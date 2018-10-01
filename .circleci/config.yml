@@ -15,6 +15,13 @@ references:
       command:
         docker build -t vehicle_builder .
 
+  workspace_root: &workspace_root
+    /tmp/workspace
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
 jobs:
   build:
     <<: *defaults
@@ -26,7 +33,11 @@ jobs:
       - run:
           name: Save docker image
           command:
-            mkdir -p docker-cache && docker save --output docker-cache/vehicle_builder.tar vehicle_builder
+            mkdir -p *workspace_root/docker-cache && docker save --output *workspace_root/docker-cache/vehicle_builder.tar vehicle_builder
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - docker-cache
       - run:
           name: Run container
           command:
