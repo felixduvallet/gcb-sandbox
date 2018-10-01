@@ -28,3 +28,7 @@ jobs:
           name: Build code
           command:
             docker exec speedy_trucker /bin/sh -c "bazel build --verbose_failures --noexperimental_ui //source/..."
+      - run:
+          name: Run tests
+          command:
+            docker exec speedy_trucker /bin/sh -c "bazel test --verbose_failures --noexperimental_ui //source/..."
