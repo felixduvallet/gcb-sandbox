@@ -20,3 +20,11 @@ jobs:
           name: Build vehicle docker
           command:
             docker build -t vehicle_builder .
+      - run:
+          name: Run container
+          command:
+            docker run -itd --name speedy_trucker vehicle_builder
+      - run:
+          name: Build code
+          command:
+            docker exec speedy_trucker /bin/sh -c "bazel build --verbose_failures --noexperimental_ui //source/..."
