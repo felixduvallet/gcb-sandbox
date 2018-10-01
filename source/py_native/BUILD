@@ -2,14 +2,15 @@ filegroup(
     name = "srcs",
     srcs = glob(["*.py"]) + [
         "BUILD",
-        "//source/py_native/fibonacci:srcs",
+
+"//source/py_native/fibonacci:srcs",
     ],
     visibility = ["//visibility:public"],
 )
 
 py_binary(
-    name = "bin",
     srcs = ["bin.py"],
+    name = "bin",
     deps = [
         ":lib",
         "//source/py_native/fibonacci",
