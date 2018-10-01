@@ -4,11 +4,14 @@
 #
 version: 2.1
 
+defaults: &defaults
+  docker:
+    - image: circleci/python:3.6.1
+  working_directory: ~/repo
+
 jobs:
   build:
-    docker:
-      - image: circleci/python:3.6.1
-    working_directory: ~/repo
+    <<: *defaults
     steps:
       - checkout
       - setup_remote_docker:
@@ -31,8 +34,7 @@ jobs:
             docker exec speedy_trucker /bin/sh -c "bazel test --verbose_failures --noexperimental_ui //source/..."
 
   lint_bazel:
-    docker:
-      - image: circleci/python:3.6.1
+    <<:  *defaults
     steps:
       - checkout
       - setup_remote_docker:
