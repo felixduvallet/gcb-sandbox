@@ -22,7 +22,7 @@ references:
   initialize: &initialize
     name: Initialize
     command:
-      mkdir -p *workspace_root
+      mkdir -p /tmp/workspace
 
   attach_workspace: &attach_workspace
     attach_workspace:
@@ -40,9 +40,9 @@ jobs:
       - run:
           name: Save docker image
           command:
-            mkdir -p *workspace_root/docker-cache && docker save --output *workspace_root/docker-cache/vehicle_builder.tar vehicle_builder
+            mkdir -p /tmp/workspace/docker-cache && docker save --output /tmp/workspace/docker-cache/vehicle_builder.tar vehicle_builder
       - persist_to_workspace:
-          root: *workspace_root
+          root: /tmp/workspace
           paths:
             - docker-cache
       - run:
@@ -68,7 +68,7 @@ jobs:
       - run:
           name: Load container
           command:
-            docker load -i *workspace_root/docker-cache/vehicle_builder.tar
+            docker load -i /tmp/workspace/docker-cache/vehicle_builder.tar
       - run:
           name: Run container
           command:
