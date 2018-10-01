@@ -13,8 +13,7 @@ references:
   run_build_container: &run_build_container
       name: Run container
       command:
-        docker run -itd --name speedy_trucker vehicle_builder
-
+        docker build -t vehicle_builder .
 
 jobs:
   build:
