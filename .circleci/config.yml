@@ -6,8 +6,6 @@ version: 2
 jobs:
   prepare:
     docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.1
 
     working_directory: ~/repo
@@ -21,6 +19,8 @@ jobs:
           command:
             docker build -t vehicle_builder .
   build:
+    docker:
+      - image: circleci/python:3.6.1
     steps:
       - run:
           name: Run container
@@ -31,6 +31,8 @@ jobs:
           command:
             docker exec speedy_trucker /bin/sh -c "bazel build --verbose_failures --noexperimental_ui //source/..."
   build:
+    docker:
+      - image: circleci/python:3.6.1
     steps:
       - run:
           name: Run tests
