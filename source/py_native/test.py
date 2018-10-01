@@ -13,5 +13,8 @@ class TestGetNumber(unittest.TestCase):
   def test_fib(self):
     self.assertEquals(Fib(5), 8)
 
+  def test_bad_fib(self):
+    self.assertEquals(Fib(4), 3)
+
 if __name__ == '__main__':
   unittest.main()
