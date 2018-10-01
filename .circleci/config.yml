@@ -20,6 +20,8 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-        docker_layer_caching: true
+          docker_layer_caching: true
       - run:
-        docker build -t vehicle_builder .
+          name: Build vehicle docker
+          command:
+            docker build -t vehicle_builder .
