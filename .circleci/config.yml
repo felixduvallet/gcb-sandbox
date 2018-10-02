@@ -19,6 +19,11 @@ references:
       command:
         docker build -t vehicle_builder .
 
+  run_start_container: &run_start_container
+    name: Run container
+    command:
+      docker run -itd --name speedy_trucker vehicle_builder
+
   initialize: &initialize
     name: Initialize
     command:
@@ -45,10 +50,7 @@ jobs:
           root: /tmp/workspace
           paths:
             - docker-cache/vehicle_builder.tar
-      - run:
-          name: Run container
-          command:
-            docker run -itd --name speedy_trucker vehicle_builder
+      - run: *run_start_container
       - run:
           name: Build code
           command:
@@ -70,10 +72,7 @@ jobs:
           name: Load container
           command:
             docker load -i /tmp/workspace/docker-cache/vehicle_builder.tar
-      - run:
-          name: Run container
-          command:
-            docker run -itd --name speedy_trucker vehicle_builder
+      - run: *run_start_container
 
   lint_bazel:
     <<:  *defaults
@@ -81,14 +80,8 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run:
-          name: Build vehicle docker
-          command:
-            docker build -t vehicle_builder .
-      - run:
-          name: Run container
-          command:
-            docker run -itd --name speedy_trucker vehicle_builder
+      - run: *run_build_container
+      - run: *run_start_container
       - run:
           name: Check bazel file
           command:
