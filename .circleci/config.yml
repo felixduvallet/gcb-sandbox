@@ -10,14 +10,16 @@ references:
       - image: circleci/python:3.6.1
     working_directory: ~/repo
 
+    setup_remote_docker:
+      docker_layer_caching: true
 
   workspace_root: &workspace_root
     /tmp/workspace
 
   run_build_container: &run_build_container
-      name: Run container
-      command:
-        docker build -t vehicle_builder .
+    name: Run container
+    command:
+      docker build -t vehicle_builder .
 
   run_start_container: &run_start_container
     name: Run container
@@ -39,8 +41,6 @@ jobs:
     steps:
       - checkout
       - run: *initialize
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run: *run_build_container
       - run:
           name: Save docker image
@@ -64,8 +64,6 @@ jobs:
     <<:  *defaults
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - attach_workspace:
           at: /tmp/workspace
       - run:
@@ -78,8 +76,6 @@ jobs:
     <<:  *defaults
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run: *run_build_container
       - run: *run_start_container
       - run:
