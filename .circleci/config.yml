@@ -10,9 +10,6 @@ references:
       - image: circleci/python:3.6.1
     working_directory: ~/repo
 
-    setup_remote_docker:
-      docker_layer_caching: true
-
   workspace_root: &workspace_root
     /tmp/workspace
 
