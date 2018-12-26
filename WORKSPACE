@@ -15,6 +15,13 @@ http_archive(
     url = "https://github.com/bazelbuild/buildtools/archive/0.15.0.zip",
 )
 
+new_git_repository(
+    name = "googletest",
+    build_file = "third_party/gtest.BUILD",
+    remote = "https://github.com/google/googletest",
+    tag = "release-1.8.1",
+)
+
 load("@io_bazel_rules_go//go:def.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
 
