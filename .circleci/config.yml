@@ -37,6 +37,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - setup_remote_docker
       - run: *initialize
       - run: *run_build_container
       - run:
@@ -61,6 +62,7 @@ jobs:
     <<:  *defaults
     steps:
       - checkout
+      - setup_remote_docker
       - attach_workspace:
           at: /tmp/workspace
       - run:
@@ -73,6 +75,7 @@ jobs:
     <<:  *defaults
     steps:
       - checkout
+      - setup_remote_docker
       - run: *run_build_container
       - run: *run_start_container
       - run:
