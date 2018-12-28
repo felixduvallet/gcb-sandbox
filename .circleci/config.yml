@@ -61,12 +61,12 @@ jobs:
           name: Run coverage
           command:
             docker exec speedy_trucker /bin/sh -c "bazel coverage --verbose_failures --noexperimental_ui //source/..."
-      - run:
-          name: Upload coverage results
-          command:
-            # request codecov to detect CI environment to pass through to docker
-            ci_env=`bash <(curl -s https://codecov.io/env)`
-            docker exec speedy_trucker -e $ci_env /bin/sh -c "bash <(curl -s https://codecov.io/bash)"
+      # - run:
+      #     name: Upload coverage results
+      #     command:
+      #       # request codecov to detect CI environment to pass through to docker
+      #       ci_env=`bash <(curl -s https://codecov.io/env)`
+      #       docker exec speedy_trucker -e $ci_env /bin/sh -c "bash <(curl -s https://codecov.io/bash)"
 
   load_container:
     <<:  *defaults
