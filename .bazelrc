@@ -1,0 +1,2 @@
+build --cxxopt='-std=c++17' --cxxopt="-Wall"
+build --crosstool_top=@llvm_toolchain//:toolchain

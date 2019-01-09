@@ -1,6 +1,24 @@
 ##### buildifier dependencies #####
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+http_archive(
+    name = "com_grail_bazel_toolchain",
+    sha256 = "6616b8d88426c3a6b816b517e87ce4c8f871accd55abe3dcef43117e0dc92f57",
+    strip_prefix = "bazel-toolchain-0.2",
+    urls = ["https://github.com/grailbio/bazel-toolchain/archive/0.2.tar.gz"],
+)
+
+load("@com_grail_bazel_toolchain//toolchain:configure.bzl", "llvm_toolchain")
+
+llvm_toolchain(
+    name = "llvm_toolchain",
+    llvm_version = "7.0.0",
+
+    # using the precompiled clang for 16.04 because one doesn't exist for 18.04 yet.
+    strip_prefix = {"linux": "clang+llvm-7.0.0-x86_64-linux-gnu-ubuntu-16.04"},
+    urls = {"linux": ["http://releases.llvm.org/7.0.0/clang+llvm-7.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz"]},
+)
+
 # buildifier is written in Go and hence needs rules_go to be built.
 # See https://github.com/bazelbuild/rules_go for the up to date setup instructions.
 http_archive(
