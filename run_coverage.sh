@@ -22,17 +22,20 @@ llvm-profdata merge \
 
 llvm-cov show -instr-profile=aggregate.dat \
          -object=bazel-out/k8-fastbuild/bin/source/cpp_native/add/tests/add_tests \
-         bazel-out/k8-fastbuild/bin/source/cpp_native/multiply/tests/multiply_tests \
+         -object=bazel-out/k8-fastbuild/bin/source/cpp_native/power/tests/power_tests \
+         -object=bazel-out/k8-fastbuild/bin/source/cpp_native/multiply/tests/multiply_tests \
          > coverage.txt
 
 llvm-cov show --format html -instr-profile=aggregate.dat \
          -object=bazel-out/k8-fastbuild/bin/source/cpp_native/add/tests/add_tests \
-         bazel-out/k8-fastbuild/bin/source/cpp_native/multiply/tests/multiply_tests \
+         -object=bazel-out/k8-fastbuild/bin/source/cpp_native/power/tests/power_tests \
+         -object=bazel-out/k8-fastbuild/bin/source/cpp_native/multiply/tests/multiply_tests \
          > coverage.html
 
 llvm-cov report -instr-profile=aggregate.dat \
          -object=bazel-out/k8-fastbuild/bin/source/cpp_native/add/tests/add_tests \
-         bazel-out/k8-fastbuild/bin/source/cpp_native/multiply/tests/multiply_tests
+         -object=bazel-out/k8-fastbuild/bin/source/cpp_native/power/tests/power_tests \
+         -object=bazel-out/k8-fastbuild/bin/source/cpp_native/multiply/tests/multiply_tests
 
 echo 'Finished'
 
