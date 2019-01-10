@@ -85,6 +85,10 @@ jobs:
           name: Run coverage
           command: |
             ./run_coverage.sh
+      - run:
+          name: Upload coverage
+          command: |
+            bash <(curl -s https://codecov.io/bash)
 
 
   load_container:
