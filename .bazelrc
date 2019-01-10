@@ -1,2 +1,5 @@
 build --cxxopt='-std=c++17' --cxxopt="-Wall"
 build --crosstool_top=@llvm_toolchain//:toolchain
+
+build --action_env="GTEST_COLOR=1"
+test --test_output=errors --action_env="GTEST_COLOR=1"
