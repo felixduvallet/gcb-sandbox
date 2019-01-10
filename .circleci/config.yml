@@ -81,6 +81,11 @@ jobs:
           name: Build code
           command: |
             bazel build --verbose_failures --noexperimental_ui //source/...
+      - run:
+          name: Run coverage
+          command: |
+            ./run_coverage.sh
+
 
   load_container:
     <<:  *defaults
