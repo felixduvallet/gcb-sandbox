@@ -67,6 +67,14 @@ jobs:
       #       # request codecov to detect CI environment to pass through to docker
       #       ci_env=`bash <(curl -s https://codecov.io/env)`
       #       docker exec speedy_trucker -e $ci_env /bin/sh -c "bash <(curl -s https://codecov.io/bash)"
+  build_native:
+    <<:  *defaults
+    steps:
+      - checkout
+      - run:
+          name: Install deps
+          command: |
+            ./install/install_bazel.sh
 
   load_container:
     <<:  *defaults
@@ -98,7 +106,4 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - load_container:
-          requires:
-            - build
-      - lint_bazel
+      - build_native
