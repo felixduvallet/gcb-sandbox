@@ -1,4 +1,4 @@
-#include "source/cpp_native/multiply.h"
+k#include "source/cpp_native/multiply/multiply.h"
 #include "gtest/gtest.h"
 
 class MultiplyTests : public ::testing::Test {};
