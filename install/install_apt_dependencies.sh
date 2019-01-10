@@ -8,6 +8,7 @@ sudo apt-get update && \
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
 clang \
 clang-format \
+zsh \
 cmake \
 curl \
 git \
