@@ -75,6 +75,10 @@ jobs:
           name: Install deps
           command: |
             sudo ./install/install_bazel.sh
+      - run:
+          name: Build code
+          command: |
+            bazel build --verbose_failures --noexperimental_ui //source/...
 
   load_container:
     <<:  *defaults
