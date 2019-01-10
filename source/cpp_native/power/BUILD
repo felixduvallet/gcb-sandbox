@@ -1,5 +1,5 @@
 cc_library(
-    name = "square",
-    hdrs = ["square.h"],
+    name = "power",
+    hdrs = ["power.h"],
     visibility = ["//visibility:public"],
 )
