@@ -2,12 +2,12 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2.1
+version: 2.0
 
 references:
   defaults: &defaults
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/buildpack-deps:bionic
     working_directory: ~/repo
 
   workspace_root: &workspace_root
@@ -67,6 +67,7 @@ jobs:
       #       # request codecov to detect CI environment to pass through to docker
       #       ci_env=`bash <(curl -s https://codecov.io/env)`
       #       docker exec speedy_trucker -e $ci_env /bin/sh -c "bash <(curl -s https://codecov.io/bash)"
+
   build_native:
     <<:  *defaults
     steps:
@@ -75,6 +76,7 @@ jobs:
           name: Install deps
           command: |
             sudo ./install/install_bazel.sh
+            sudo ./install/install_apt_dependencies.sh
       - run:
           name: Build code
           command: |
