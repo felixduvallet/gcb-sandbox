@@ -12,5 +12,6 @@ cmake \
 curl \
 git \
 less \
+llvm \
 nano \
 zsh
