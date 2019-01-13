@@ -8,13 +8,6 @@ rm -f coverage.txt
 bazel build //source/...
 bazel coverage //source/cpp_native/...
 
-# Compatible with codecov
-# llvm-profdata merge -sparse /tmp/llvm_profile/profile-*.profraw -o coverage.profdata
-# llvm-cov show ./hello -instr-profile=coverage.profdata > coverage.txt
-
-coverage_files=$(ls bazel-out/k8-fastbuild/testlogs/source/cpp_native/**/coverage.dat)
-test_files=$(ls bazel-out/k8-fastbuild/bin/source/cpp_native/**/tests/*_tests)
-
 # find bazel-bin/ -executable -type f | grep tests$ | uniq
 
 ## Merge then parse
