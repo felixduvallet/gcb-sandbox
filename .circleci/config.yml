@@ -90,6 +90,18 @@ jobs:
           command: |
             bash <(curl -s https://codecov.io/bash)
 
+  code_lint:
+    <<:  *defaults
+    steps:
+      - checkout
+      - run:
+          name: Install deps
+          command: |
+            sudo ./install/install_apt_dependencies.sh
+      - run:
+          name: Check code format
+          command: |
+            ./check_code_format.sh
 
   load_container:
     <<:  *defaults
@@ -122,3 +134,4 @@ workflows:
     jobs:
       - build
       - build_native
+      - code_lint
