@@ -93,6 +93,7 @@ jobs:
   code_lint:
     <<:  *defaults
     steps:
+      - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
       - checkout
       - run:
           name: Install deps
