@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Run coverage
           command: |
-            ./run_coverage.sh
+            ./run_coverage.sh -f text
       - run:
           name: Upload coverage
           command: |
