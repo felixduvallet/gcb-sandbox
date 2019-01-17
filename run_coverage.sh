@@ -1,51 +1,99 @@
 #!/usr/bin/env zsh
+#
+# NOTE: zsh is required for file globbing.
+#
+# Runs 'bazel coverage' on tests, then generates a code coverage report.
 
-set -x
 set -e
 
-rm -f coverage.html
-rm -f coverage.txt
-rm -rf report-html/
-rm -rf report/
+run_coverage=1
+output='coverage-report'
+output_format='html'
+usage() {
+    echo \
+    "Usage: $0
+      [-r] <0, 1>       (run coverage, default=${run_coverage})
+      [-o] <name>       (output, default=${output})
+      [-f] <html, text> (output format, default=${output_format})
+      " 1>&2;
+      exit 1;
+}
 
-bazel test //source/...
-bazel coverage  //source/cpp_native/...
+while getopts 'hr:o:f:' flag; do
+    case "${flag}" in
+        r) run_coverage=$OPTARG
+           ;;
+        o) output=$OPTARG
+           ;;
+        f) output_format=$OPTARG
+           ;;
+        h | *)
+            usage
+            exit 0
+            ;;
+    esac
+done
+shift $((OPTIND -1))
 
-# find bazel-bin/ -executable -type f | grep tests$ | uniq
+# Find the paths to our toolchain's llvm-cov and llvm-profdata.
+if [[ -z "${LLVM_DIR:=$(bazel info output_base)/external/llvm_toolchain/bin}" ]]; then
+    echo "Unable to find our llvm toolchain." 1>&2
+    exit 1
+fi
 
-## Merge then parse
-llvm-profdata merge -sparse=false \
-              bazel-out/k8-fastbuild/testlogs/source/cpp_native/**/coverage.dat \
-               -o aggregate.dat
+LLVM_COV="${LLVM_DIR}/llvm-cov"
+LLVM_PROFDATA="${LLVM_DIR}/llvm-profdata"
 
-OBJ_FILES=(-object=bazel-bin/source/cpp_native/add/libadd.so \
-                  -object=bazel-bin/source/cpp_native/multiply/libmultiply.so \
-                  -object=bazel-bin/source/cpp_native/power/libpower.so)
+# Generate code coverage data.
+if [[ ${run_coverage} -eq 1 ]];
+then
+    # Run all small & medium tests.
+    #
+    # NOTE: Exclude lanenet targets because otherwise we must build all of
+    # tensorflow. (bazel test/coverage commands build all targets, not just
+    # tests.)
+    bazel coverage \
+          --test_size_filters=small,medium \
+          -- \
+          //source/cpp_native/...
+else
+    echo 'Skipping coverage run, using previous data.'
+fi
 
-llvm-cov show -instr-profile=aggregate.dat  ${OBJ_FILES[*]} > coverage.txt
+# Merge all generated coverage data files into one aggregate one.
+${LLVM_PROFDATA} merge \
+                 $(bazel info bazel-testlogs)/**/coverage.dat \
+                 -o aggregate.dat
 
-llvm-cov show --format html -output-dir=report-html/  -instr-profile=aggregate.dat  ${OBJ_FILES[*]} > coverage.html
+# Show the report on screen.
+${LLVM_COV} report -instr-profile=aggregate.dat \
+            -show-instantiation-summary \
+            -ignore-filename-regex=external -ignore-filename-regex=bazel-out \
+            $(cat $(bazel info bazel-bin)/**/tests/*.runfiles_manifest \
+                  | cut -d ' ' -f 2 | grep -v gtest | grep libsource | egrep ".so$" | xargs -n 1 -I xxx echo -n "-object=xxx ")
 
-llvm-cov report -instr-profile=aggregate.dat ${OBJ_FILES[*]}
+# Create coverage report in the desired format.
+if [[ ${output_format} == "html" ]];
+then
+    rm -rf ${output}
+    ${LLVM_COV} show -format=html -output-dir=${output} \
+                -instr-profile aggregate.dat \
+                -ignore-filename-regex=external -ignore-filename-regex=bazel-out \
+                $(cat $(bazel info bazel-bin)/**/tests/*.runfiles_manifest \
+                      | cut -d ' ' -f 2 | grep -v gtest | grep libsource | egrep ".so$" | xargs -n 1 -I xxx echo -n "-object=xxx ")
+    echo "Wrote HTML report to ${output}/"
+elif [[ ${output_format} == "text" ]];
+then
+    rm -f ${output}.txt
+    ${LLVM_COV} show -format=text \
+                -instr-profile aggregate.dat \
+                -ignore-filename-regex=external -ignore-filename-regex=bazel-out \
+                $(cat $(bazel info bazel-bin)/**/tests/*.runfiles_manifest \
+                      | cut -d ' ' -f 2 | grep -v gtest | grep libsource | egrep ".so$" | xargs -n 1 -I xxx echo -n "-object=xxx ") \
+                > ${output}.txt
+       echo "Wrote coverage to ${output}.txt"
+else
+    echo "Invalid report format: ${output_format}"
+fi
 
-echo '----'
-
-ADD_OBJ_FILES=$(cat bazel-out/k8-fastbuild/bin/source/cpp_native/add/tests/add_tests.runfiles_manifest\
-                    | cut -d ' ' -f 2 | grep -v gtest | egrep ".so$" | xargs -n 1 -I xxx echo -n "-object xxx ")
-
-echo ${ADD_OBJ_FILES[*]}
-return
-
-llvm-cov report -instr-profile=aggregate.dat \
-         -verify-region-info -show-instantiation-summary \
-         ${ADD_OBJ_FILES[*]}
-
-llvm-cov show -format=html -output-dir=report/ \
-         -instr-profile aggregate.dat \
-         $(cat bazel-out/k8-fastbuild/bin/source/cpp_native/add/tests/add_tests.runfiles_manifest\
-               | cut -d ' ' -f 2 | grep -v gtest | egrep ".so$" | xargs -n 1 -I xxx echo -n "-object xxx ")
-
-
-# (LLVM_COV_CMD="llvm-cov-3.9 show -format=html -output-dir=$(pwd)/report/ -instr-profile bazel-out/k8-fastbuild/testlogs/src/test/cpp/option_processor_test/coverage.dat bazel-out/k8-fastbuild/bin/src/test/cpp/option_processor_test $(cat bazel-out/k8-fastbuild/bin/src/test/cpp/option_processor_test.runfiles_manifest | cut -d' ' -f 2 | egrep ".so$" | xargs -n 1 -I xxx echo -n "-object xxx ")" && cd bazel-os-bazel && $LLVM_COV_CMD)
-
-echo 'Finished'
+rm aggregate.dat
