@@ -14,7 +14,7 @@ references:
     /tmp/workspace
 
   run_build_container: &run_build_container
-    name: Run container
+    name: Build container
     command:
       docker build -t vehicle_builder .
 
@@ -40,14 +40,6 @@ jobs:
       - setup_remote_docker
       - run: *initialize
       - run: *run_build_container
-      - run:
-          name: Save docker image
-          command:
-            mkdir -p /tmp/workspace/docker-cache && docker save --output /tmp/workspace/docker-cache/vehicle_builder.tar vehicle_builder
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - docker-cache/vehicle_builder.tar
       - run: *run_start_container
       - run:
           name: Build code
@@ -81,19 +73,6 @@ jobs:
           name: Build code
           command: |
             bazel build --verbose_failures --noexperimental_ui //source/...
-
-  load_container:
-    <<:  *defaults
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load container
-          command:
-            docker load -i /tmp/workspace/docker-cache/vehicle_builder.tar
-      - run: *run_start_container
 
   lint_bazel:
     <<:  *defaults
