@@ -15,4 +15,5 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
      llvm \
      nano \
      python-numpy \
+     sudo \
      zsh
