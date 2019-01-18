@@ -1,11 +1,10 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
   curl \
+  ca-certificates \
   g++ \
   pkg-config \
-  python \
-  python-numpy \
   unzip \
   wget \
   zip \
