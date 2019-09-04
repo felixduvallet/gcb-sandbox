@@ -1,3 +1,6 @@
+# Don't post comments on PR yet.
+comment: off
+
 # Don't mark any PR as failed if the code coverage drops.
 coverage:
   status:
